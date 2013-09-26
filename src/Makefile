@@ -1,6 +1,6 @@
 CC = arm-linux-gnueabihf-gcc
 CFLAGS = -mfloat-abi=hard
-LDFLAGS = -static -lssl -lcrypto
+LDFLAGS = -lssl -lcrypto
 SRCS = \
 	accesscontrol.c
 OBJS = ${SRCS:.c=.o}
