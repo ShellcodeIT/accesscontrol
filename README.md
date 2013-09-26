@@ -1,4 +1,8 @@
-accesscontrol
+AccessControl
 =============
 
-Servers management, controlling access to OpenSSL, with public keys.
+Management access to OpenSSH on multiple servers, through control of public keys.
+
+TODO:
+- Handle SSH connections and create communication protocol.
+- Web manager.
