@@ -1,0 +1,17 @@
+CC = gcc
+CFLAGS =
+LDFLAGS = -static -lssl -lcrypto
+SRCS = \
+	accesscontrol.c
+OBJS = ${SRCS:.c=.o}
+
+all: accesscontrol
+
+accesscontrol: ${OBJS}
+	${CC} ${LDFLAGS} -o $@ ${OBJS}
+
+clean:
+	rm -f *.o accesscontrol
+
+test:
+	./accesscontrol
