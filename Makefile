@@ -7,9 +7,11 @@ INSTALLDATA = /usr/bin/install -c -m 644
 PREFIX = /usr
 BINDIR = $(PREFIX)/sbin
 
-all: intel runintel
-#all: install
-#	accesscontrol -id testrouter
+all: allintel
+
+allintel: intel runintel
+
+allarm: arm runarm
 
 install: intel
 	$(INSTALL) src/accesscontrol $(BINDIR)/accesscontrol
