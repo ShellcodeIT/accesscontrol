@@ -1,8 +1,11 @@
 CC = arm-linux-gnueabihf-gcc
-CFLAGS = -mfloat-abi=hard
+CFLAGS = -mfloat-abi=hard -I./include/
+
 LDFLAGS = -lssl -lcrypto
 SRCS = \
-	accesscontrol.c
+	accesscontrol.c \
+	ssl.c
+
 OBJS = ${SRCS:.c=.o}
 
 all: accesscontrol
