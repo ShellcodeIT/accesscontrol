@@ -137,7 +137,8 @@ void msg(const char *format, ...)
 
 int main(int argc, char **argv)
 {
-	int sockfd, newsockfd, portno, clilen;
+	int sockfd, newsockfd, portno;
+	socklen_t clilen;
 	int child_pid = -1;
 	char *request = (char *)malloc(REQUESTSIZE * sizeof(char));
 	char *response = (char *)malloc(RESPONSESIZE * sizeof(char));
