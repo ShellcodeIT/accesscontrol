@@ -22,6 +22,14 @@ void catch_child(int sig_num)
 	wait(&child_status);
 }
 
+void finish_main(int sig_num)
+{
+	printf("Finishing main and childs...\n");
+	int child_status;
+	wait(&child_status);
+	exit(0);
+}
+
 char toHexChar(int digitValue)
 {
 	if (digitValue < 10)
@@ -170,6 +178,7 @@ int main(int argc, char **argv)
 		}
 	}
 	signal(SIGCHLD, catch_child);
+	signal(SIGUSR1, finish_main);
 
 	if (!daemonizeflag)
 	{
@@ -216,6 +225,7 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
+	int mainPID = getpid();
 	/* Now start listening for the clients, here process will
 	 * go in sleep mode and will wait for the incoming connection
 	 */
@@ -290,29 +300,50 @@ int main(int argc, char **argv)
 
 			int stop_loop = 0;
 			// first read data
-			int r = SSL_read(ssl, request, REQUESTSIZE);
+			int r;
 
-			switch (SSL_get_error(ssl, r))
+			while (stop_loop == 0)
 			{
-			case SSL_ERROR_NONE:
-				if (request[r - 2] == '\r')
+
+				r = SSL_read(ssl, request, REQUESTSIZE);
+
+				switch (SSL_get_error(ssl, r))
 				{
-					request[r - 2] = '\0';
+				case SSL_ERROR_NONE:
+					if (request[r - 2] == '\r')
+					{
+						request[r - 2] = '\0';
+					}
+					else if (request[r - 1] == '\n')
+					{
+						request[r - 1] = '\0';
+					}
+					break;
+				case SSL_ERROR_ZERO_RETURN:
+					printf("SSL zero return");
+					stop_loop = 1;
+				default:
+					printf("SSL read problem");
+					stop_loop = 1;
 				}
-				else if (request[r - 1] == '\n')
+
+				if (stop_loop == 0)
 				{
-					request[r - 1] = '\0';
+					msg("%s%d > %s", CHILDPROCESS, getpid(), request);
+					if (strcmp(request, "CLOSE") == 0 || strcmp(request, "FINISH") == 0)
+					{
+
+						SSL_shutdown(ssl);
+						SSL_free(ssl);
+						close(newsockfd);
+						if (strcmp(request, "FINISH") == 0)
+							kill(0, SIGUSR1);
+						exit(EXIT_SUCCESS);
+					}
 				}
-				break;
-			case SSL_ERROR_ZERO_RETURN:
-				stop_loop = 1;
-			default:
-				printf("SSL read problem");
-				stop_loop = 1;
 			}
 
-			msg("%s%d > %s", CHILDPROCESS, getpid(), request);
-
+			msg("%s%d > ENDING CHILD PROCESS", CHILDPROCESS, getpid(), request);
 			SSL_shutdown(ssl);
 			SSL_free(ssl);
 			close(newsockfd);
