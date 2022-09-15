@@ -1,6 +1,7 @@
 CC = arm-linux-gnueabihf-gcc
-CFLAGS = -mfloat-abi=hard -I./include/
-LDFLAGS = -lssl -lcrypto
+CFLAGS = -mfloat-abi=hard -I./include/ `pkg-config --cflags openssl`
+LDFLAGS = `pkg-config --libs openssl`
+
 SRCS = \
 	accesscontrol.c \
 	ssl.c

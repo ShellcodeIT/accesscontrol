@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -I./include/
-LDFLAGS = -lssl -lcrypto
+CFLAGS = -I./include/ `pkg-config --cflags openssl`
+LDFLAGS = `pkg-config --libs openssl`
 SRCS = \
 	accesscontrol.c \
 	ssl.c
