@@ -8,12 +8,14 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
-typedef struct {
+typedef struct
+{
     int socket;
     SSL *sslHandle;
     SSL_CTX *sslContext;
 } secconnection;
 
-SSL_CTX *initialize_ctx(char *keyfile, char *password);
-
+SSL_CTX *initialize_ctx();
+void configure_context(SSL_CTX *ctx, char *cert_path, char *pkey_path, char *pkey_passwd);
+static int password_cb(char *buf, int num, int rwflag, void *userdata);
 #endif

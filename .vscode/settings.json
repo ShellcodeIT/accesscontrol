@@ -1,0 +1,10 @@
+{
+  "files.associations": {
+    "unistd.h": "c",
+    "accesscontrol.h": "c",
+    "common.h": "c",
+    "ssl.h": "c",
+    "netw.h": "c",
+    "string.h": "c"
+  }
+}

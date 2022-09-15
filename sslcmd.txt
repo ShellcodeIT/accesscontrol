@@ -1,0 +1,10 @@
+#generate the RSA private key
+openssl genpkey -outform PEM -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out key.pem 
+# with passphrase
+openssl genpkey -outform PEM -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out key.pem -aes192
+
+#Create the CSR (Click csrconfig.txt in the command below to download config)
+openssl req -new -nodes -key key.pem -config ssl.conf -nameopt utf8 -utf8 -out cert.csr
+
+# certificate
+openssl x509 -signkey key.pem -in cert.csr -req -days 36500 -out cert.pem
